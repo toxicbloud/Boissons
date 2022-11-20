@@ -6,6 +6,8 @@ try {
     $mysqli = new mysqli("localhost", $tab['username'], $tab['password'], "", $tab['port']);
     $mysqli->set_charset("utf8mb4");
 } catch (Exception $e) {
+    echo $e->getMessage();
+    print_r($e);
     error_log($e->getMessage());
     exit('Error connecting to database'); //Should be a message a typical user could understand
 }
