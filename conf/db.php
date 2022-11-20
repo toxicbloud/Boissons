@@ -7,6 +7,7 @@ $tab = parse_ini_file('db.config.ini');
 $db->addConnection([
     'driver'    => $tab['driver'],
     'host'      => $tab['host'],
+    'port'      => $tab['port'],
     'database'  => $tab['database'],
     'username'  => $tab['username'],
     'password'  => $tab['password'],

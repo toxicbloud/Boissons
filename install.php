@@ -3,7 +3,7 @@ $tab = parse_ini_file('conf/db.config.ini');
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $mysqli = null;
 try {
-    $mysqli = new mysqli("localhost", $tab['username'], $tab['password'], "projet");
+    $mysqli = new mysqli("localhost", $tab['username'], $tab['password'], "", $tab['port']);
     $mysqli->set_charset("utf8mb4");
 } catch (Exception $e) {
     error_log($e->getMessage());
@@ -15,6 +15,10 @@ echo '<li>MySQLi server info: ' . $mysqli->server_info . '</li>';
 echo '<li>MySQLi client info: ' . $mysqli->client_info . '</li>';
 echo '<li>MySQLi host info: ' . $mysqli->host_info . '</li>';
 echo "<br>";
+$sql = "Create database if not exists " . $tab['database'];
+echo $mysqli->query($sql) ? '<li>Database created</li>' : '<li>Database not created</li>';
+$sql = "use " . $tab['database'];
+echo $mysqli->query($sql) ? '<li>Database selected</li>' : '<li>Database not selected</li>';
 $sql = "DROP TABLE IF EXISTS user";
 echo $mysqli->query($sql) ? '<li>RESET table user</li>' : 'USER KO';
 $sql = "CREATE TABLE IF NOT EXISTS user (
