@@ -2,7 +2,7 @@
 $tab = parse_ini_file('conf/db.config.ini');
 $pdo = null;
 try {
-    $pdo = new PDO("mysql:host=".$tab['host'].";port=".$tab['port'].";dbname=" . $tab['database'] . ";charset=utf8mb4", $tab['username'], $tab['password']);
+    $pdo = new PDO("mysql:host=".$tab['host'].";port=".$tab['port'].";charset=utf8mb4", $tab['username'], $tab['password']);
 } catch (Exception $e) {
     echo $e->getMessage();
     print_r($e);
