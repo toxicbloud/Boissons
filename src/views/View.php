@@ -63,7 +63,13 @@ END;
           <head>
            <meta charset="utf-8">
            <meta name="viewport" content="width=device-width, initial-scale=1">
-           <link rel="icon" href="$path/img/favicon.ico" />
+           <meta property="og:title" content="Boissons">
+            <meta property="og:type" content="website">
+            <meta property="og:url" content="http://boissons.antoninrousseau.fr">
+            <meta property="og:image" content="./Photos/icon.png">
+            <meta property="og:description" content="Projet Programmation Web L3 Info">
+            <meta name="theme-color" content="#F04823">
+           <link rel="icon" href="$path/Photos/favicon.ico" />
            <title> $titre </title>
            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" >
            <link href="$path/css/style.css" rel="stylesheet" >
