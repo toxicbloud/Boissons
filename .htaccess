@@ -1,0 +1,10 @@
+RewriteEngine ON
+
+# Pour ne pas se faire voler les identifiants de la bdd
+RewriteRule ^conf(/.*|)$ - [NC,F]
+RewriteRule ^src(/.*|)$ - [NC,F]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond  "%{DOCUMENT_ROOT}/%{REQUEST_URI}" !-f 
+RewriteCond  "%{DOCUMENT_ROOT}/%{REQUEST_URI}" !-d 
+RewriteRule ^ index.php [QSA,L]

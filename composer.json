@@ -1,0 +1,14 @@
+{
+    "name": "app/boissons",
+    "type" : "project",
+    "autoload": {
+      "psr-4": {
+        "boissons\\": "src/"
+      }
+    },
+    "require": {
+        "php": ">=8.0",
+        "slim/slim": "3.*",
+        "illuminate/database": "^8.0"
+    }
+}

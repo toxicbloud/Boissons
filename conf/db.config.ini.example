@@ -1,0 +1,6 @@
+driver=mysql
+username=root
+password=nooooooooooooooonpaslemotdepassedesole
+host=localhost
+database=projet
+port=3306
