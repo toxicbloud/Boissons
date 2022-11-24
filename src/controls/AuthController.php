@@ -4,6 +4,7 @@ namespace boissons\controls;
 
 use boissons\models\User;
 use boissons\exceptions\WrongPasswordException;
+use boissons\views\LoginView;
 
 class AuthController
 {
@@ -28,5 +29,9 @@ class AuthController
     {
         session_destroy();
         return $rs->withRedirect('/');
+    }
+    static function showLoginForm($rq,$rs,$args){
+        $view = new LoginView($rq);
+        return $view->render();
     }
 }

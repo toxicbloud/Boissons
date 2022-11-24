@@ -1,4 +1,5 @@
 <?php
+include('Donnees.inc.php');
 $tab = parse_ini_file('conf/db.config.ini');
 $pdo = null;
 try {
@@ -35,3 +36,15 @@ $sql = "CREATE TABLE IF NOT EXISTS user (
 
 echo $pdo->query($sql) ? '<li>Table user créée avec succès</li>' : 'USER KO';
 echo "</ul>";
+foreach($Recettes as $value){
+    $ing = $value['ingredients'];
+    echo "<li>";
+    echo $value['titre'];
+    $res = explode("|", $ing);
+    foreach($res as $str){
+        echo "<ul>";
+        echo $str;
+        echo "</ul>";
+    }
+    echo "</li>";
+}
