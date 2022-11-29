@@ -31,6 +31,7 @@ class RegisterView
             }
         </style>
         <section class="h-100 bg-dark">
+        <form action="register" method="post">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col">
@@ -110,7 +111,7 @@ class RegisterView
                         <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="form-outline">
-                            <input type="text" id="form3Example1m" class="form-control form-control-lg" />
+                            <input type="text" name="pseudo" id="form3Example1m" class="form-control form-control-lg" />
                             <label class="form-label" for="form3Example1m">Nom d'utilisateur</label>
                             </div>
                         </div>
@@ -122,19 +123,25 @@ class RegisterView
                         </div>
                         </div>
 
-                        <div class="form-outline mb-4">
-                        <input type="password" id="form3Example90" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Example90">Mot de passe</label>
-                        </div>
 
-                        <div class="form-outline mb-4">
-                        <input type="password" id="form3Example90" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Example90">Confirmer mot de passe</label>
+                         <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="form-outline">
+                            <input type="password" name="password" id="mdpText" class="form-control form-control-lg" />
+                            <label class="form-label" for="mdpText">Mot de passe</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-outline">
+                            <input type="password" id="confMDPText" class="form-control form-control-lg" />
+                            <label class="form-label" for="confMDPText">Confirmer mot de passe</label>
+                            </div>
+                        </div>
                         </div>
 
                         <div class="d-flex justify-content-end pt-3">
                         <button type="button" class="btn btn-light btn-lg">Tout supprimer</button>
-                        <button type="button" class="btn btn-warning btn-lg ms-2">Confirmer</button>
+                        <button type="submit" class="btn btn-warning btn-lg ms-2">Confirmer</button>
                         </div>
 
                     </div>
@@ -144,6 +151,7 @@ class RegisterView
             </div>
             </div>
         </div>
+        </form>
         </section>
         END;
         return $temp;
