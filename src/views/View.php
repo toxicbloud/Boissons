@@ -85,6 +85,7 @@ END;
         } else {
             $temp .= <<<END
                         <a class="nav-link" href="$path/login">Connexion</a>
+                        <a class="nav-link" href="$path/register">Inscription</a>
 END;
         }
         $temp .= <<<END
