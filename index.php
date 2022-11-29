@@ -38,20 +38,7 @@ $app->get('/login', function ($rq, $rs, $args) {
 });
 $app->get('/logout', AuthController::class . ':logout');
 $app->get('/register', function ($rq, $rs, $args) {
-    $content = <<<END
-    <form action="register" method="post">
-        <div class="form-group
-        <label for="pseudo">Pseudo</label>
-        <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Pseudo">
-        </div>
-        <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe">
-        </div>
-        <button type="submit" class="btn btn-primary">Inscription</button>
-    </form>
-END;
-    return $content;
+    return AuthController::showRegisterForm($rq, $rs, $args);
 });
 $app->post('/register', AuthController::class . ':register');
 $app->post('/login', AuthController::class . ':login');

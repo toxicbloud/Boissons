@@ -5,6 +5,7 @@ namespace boissons\controls;
 use boissons\models\User;
 use boissons\exceptions\WrongPasswordException;
 use boissons\views\LoginView;
+use boissons\views\RegisterView;
 
 class AuthController
 {
@@ -32,6 +33,10 @@ class AuthController
     }
     static function showLoginForm($rq,$rs,$args){
         $view = new LoginView($rq);
+        return $view->render();
+    }
+    static function showRegisterForm($rq, $rs, $args){
+        $view = new RegisterView($rq);
         return $view->render();
     }
 }
