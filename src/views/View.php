@@ -8,7 +8,6 @@ use Slim\Http\Request;
 class View
 {
     private $html;
-
     /*
      *  $content String correspondant au information de la page à afficher
      *  $titre String le titre qui sera afficher en tant que Title sur la page web
@@ -39,6 +38,7 @@ class View
             <meta property="og:description" content="Projet Programmation Web L3 Info">
             <meta name="theme-color" content="#F04823">
            <link rel="icon" href="$path/Photos/favicon.ico" />
+           <link rel="stylesheet" href="$path/static/styles.css">
            <title> $titre </title>
            
            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
