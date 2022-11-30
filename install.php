@@ -55,11 +55,19 @@ $sql = "DROP TABLE IF EXISTS Aliment";
 echo $pdo->query($sql) ? '<li>RESET table aliment</li>' : 'ALIMENT KO';
 $sql = "CREATE TABLE IF NOT EXISTS aliment (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(60) NOT NULL UNIQUE,
-    pere INT(6) UNSIGNED NULL,
-    FOREIGN KEY (pere) REFERENCES aliment(id)
+    name VARCHAR(60) NOT NULL UNIQUE
     );";
 echo $pdo->query($sql) ? '<li>Table aliment crée avec succès</li>' : 'ALIMENT KO';
+$sql = "DROP TABLE IF EXISTS categorie";
+echo $pdo->query($sql) ? '<li>RESET table categorie</li>' : 'SUPER CATEGORIE KO';
+$sql = "CREATE TABLE IF NOT EXISTS categorie (
+    id INT(6) UNSIGNED ,
+    idPere INT(6) UNSIGNED ,
+    primary key (id, idPere),
+    FOREIGN KEY (id) REFERENCES aliment(id),
+    FOREIGN KEY (idPere) REFERENCES aliment(id)
+    );";
+echo $pdo->query($sql) ? '<li>Table categorie crée avec succès</li>' : 'SUPER CATEGORIE KO';
 $sql = "DROP TABLE IF EXISTS compositionPanier";
 echo $pdo->query($sql) ? '<li>RESET table compositionPanier </li>' : 'PANIER KO';
 $sql = "CREATE TABLE IF NOT EXISTS compositionPanier (
@@ -113,9 +121,9 @@ foreach($Hierarchie as $key => $value){
 foreach($Hierarchie as $key => $value){
     if(isset($value['super-categorie'])){
         foreach($value['super-categorie'] as $superCategorie){
-            $prepare = $pdo->prepare("UPDATE aliment SET pere = :pere WHERE name = :name");
-            $prepare->bindValue(':name', $key);
-            $prepare->bindValue(':pere', getIdInDB($pdo, $superCategorie));
+            $prepare = $pdo->prepare("INSERT INTO categorie (id, idPere) VALUES (:id, :idPere)");
+            $prepare->bindValue(':id', getIdInDB($pdo, $key));
+            $prepare->bindValue(':idPere', getIdInDB($pdo, $superCategorie));
             $prepare->execute();
         }
     }
