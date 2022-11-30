@@ -34,6 +34,15 @@ $app->get(
     }
 );
 $app->get('/cocktails', function () {
+    $content = "";
+    $ingredients = Cocktail::where('name', 'like', 'Alerte%')->first()->composition;
+    $content .= Cocktail::where('name', 'like', 'Alerte%')->first()->name;
+    $content .= "<ul>";
+    foreach ($ingredients as $ingredient) {
+        $content .= "<li>" . $ingredient->name . "</li>";
+    }
+    $content .= "</ul>";
+    return $content;
 });
 $app->get('/aliment/{name}',function ($rq, $rs, $args) {
     $name = $args['name'];
