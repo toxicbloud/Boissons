@@ -25,8 +25,12 @@ class LoginView
             background-image:url('$path/Photos/imageLogin.jpeg');
             background-repeat: no-repeat;
             background-size: 100% 160%;
-        }
-        <section class="vh-100">
+          }
+          @media only screen and (max-device-width: 768px){
+            body{
+              backdrop-filter: blur(10px);
+             }
+            }
         </style>
             <div class="container py-5 h-200 mt-5">
               <div class="row d-flex justify-content-center align-items-center h-100">
@@ -58,7 +62,6 @@ class LoginView
                 </div>
               </div>
             </div>
-          </section>
 END;
         return $temp;
     }
