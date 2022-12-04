@@ -51,7 +51,7 @@ class View
         <body>
             <nav class="navbar navbar-expand-lg bg-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="$path">
+                    <a class="navbar-brand" href="$path/">
                     <img src="$path/Photos/favicon.ico" alt="" width="60" height="60">
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
