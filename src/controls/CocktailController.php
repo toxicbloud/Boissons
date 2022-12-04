@@ -3,6 +3,7 @@ namespace boissons\controls;
 use \boissons\views\CocktailsView;
 use \boissons\views\CocktailView;
 use \boissons\models\Cocktail;
+use \boissons\models\Aliment;
 
 class CocktailController {
 
@@ -17,5 +18,11 @@ class CocktailController {
         $cocktails = Cocktail::all();
         $view = new CocktailsView($rq,$cocktails);
         return $view->render();
+    }
+    function getAliments($rq, $rs, $args)
+    {
+        // return all aliments in json
+        $aliments = Aliment::all();
+        return $rs->withJson($aliments);
     }
 }

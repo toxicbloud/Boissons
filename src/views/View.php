@@ -8,24 +8,39 @@ use Slim\Http\Request;
 class View
 {
     private $html;
+    private $css;
+    private $js;
     /*
      *  $content String correspondant au information de la page à afficher
      *  $titre String le titre qui sera afficher en tant que Title sur la page web
      */
     public function __Construct($content, $titre, Request $rq)
     {
-        $page = $this->setTemplate($content, $titre, $rq);
-        $this->html = $page;
+        $this->content = $content;
+        $this->titre = $titre;
+        $this->rq = $rq;
+        $this->css = [];
+        $this->js = [];
     }
-
-    public function render()
+    public function addCSSSheet($path)
     {
-        $this->gethtml();
+        $this->css[] = $path;
     }
-
-    public function setTemplate($content, $titre, Request $rq)
+    public function addJSScript($path)
     {
-        $path = $rq->getUri()->getBasePath();
+        $this->js[] = $path;
+    }
+    public function setTemplate()
+    {
+        $path = $this->rq->getUri()->getBasePath();
+        $cssLink = "";
+        foreach ($this->css as $css) {
+            $cssLink .= "<link rel='stylesheet' href='$path/static/$css'>";
+        }
+        $jsLink = "";
+        foreach ($this->js as $js) {
+            $jsLink .= "<script src='$path/static/$js'></script>";
+        }
         $temp = <<<END
          <!DOCTYPE html> <html>
           <head>
@@ -39,14 +54,14 @@ class View
             <meta name="theme-color" content="#F04823">
            <link rel="icon" href="$path/Photos/favicon.ico" />
            <link rel="stylesheet" href="$path/static/styles.css">
-           <title> $titre </title>
+            $cssLink
+            $jsLink
+           <title> $this->titre </title>
            
            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-           <link href="$path/css/style.css" rel="stylesheet" >
           </head>
         <body>
             <nav class="navbar navbar-expand-lg bg-light">
@@ -96,7 +111,7 @@ END;
                     </div>
                 </div>
             </nav>
-          $content
+          $this->content
          </body>
         <html>
 END;
@@ -105,6 +120,7 @@ END;
 
     public function getHtml()
     {
+        $this->html = $this->setTemplate();
         return $this->html;
     }
 }

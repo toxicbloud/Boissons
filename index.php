@@ -17,6 +17,7 @@ use \Slim\Container;
 use Slim\Http\Request;
 use boissons\models\User;
 use boissons\views\LoginView;
+use boissons\views\SearchView;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
 
@@ -32,13 +33,15 @@ $app->get(
     '/',
     function ($rq, $rs, $args) {
         $content = "";
-        $html = new View($content, 'Boissons', $rq);
-        return $html->getHtml();
+        // $html = new View($content, 'Boissons', $rq);
+        $vue = new SearchView($rq);
+        return $vue->render();
     }
 );
 
 $app->get('/cocktail/{id}', CocktailController::class . ':getCocktail');
 $app->get('/cocktails', CocktailController::class . ':getCocktails');
+$app->get('/aliments', CocktailController::class . ':getAliments');
 $app->get('/aliment/{id}',function ($rq, $rs, $args) {
     $id = $args['id'];
     $aliments = Aliment::where('id', '=',$id)->with('superCategories','sousCategories','cocktails')->first();
