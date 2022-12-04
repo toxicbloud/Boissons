@@ -33,27 +33,25 @@ class RegisterView
         <section class="h-100 bg-dark">
         <form action="register" method="post">
         <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="row-md d-flex justify-content-center align-items-center h-100">
             <div class="col">
-                <div class="card card-registration my-4">
+                <div class="card card-registration my-2" style="border: rgba( 0, 0, 0, .0);">
                 <div class="row g-0">
                     <div class="col-xl-6 d-none d-xl-block">
-                    <img src="$path/Photos/imageRegister.png"
-                        alt="Sample photo" class="img-fluid"
-                        style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                    <img src="$path/Photos/imageRegister.png" alt="Sample photo" class="img-fluid"/>
                     </div>
-                    <div class="col-xl-6">
+                    <div class="col-xl-6" style="background-color: rgba(140, 140, 140, .2);">
                     <div class="card-body p-md-5 text-black">
                         <h3 class="mb-5 text-uppercase">Inscription</h3>
 
                         <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="text" id="firstnameText" class="form-control form-control-lg" />
                             <label class="form-label" for="firstnameText">Prénom</label>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="text" id="lastnameText" class="form-control form-control-lg" />
                             <label class="form-label" for="lastnameText">Nom</label>
@@ -61,19 +59,19 @@ class RegisterView
                         </div>
                         </div>
 
-                        <div class="form-outline mb-4">
+                        <div class="form-outline mb-2">
                         <input type="text" id="form3Example8" class="form-control form-control-lg" />
                         <label class="form-label" for="form3Example8">Addresse</label>
                         </div>
 
                         <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="text" id="form3Example1m" class="form-control form-control-lg" />
                             <label class="form-label" for="form3Example1m">Ville</label>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="text" id="form3Example1n" class="form-control form-control-lg" />
                             <label class="form-label" for="form3Example1n">Code postal</label>
@@ -82,15 +80,15 @@ class RegisterView
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-4 d-flex align-items-center">
+                            <div class="col-md-6 mb-2 d-flex align-items-center">
                               <div class="form-outline datepicker w-100">
                                 <input type="date" class="form-control form-control-lg" id="birthdayDate" />
                                 <label for="birthdayDate" class="form-label">Date de naissance</label>
                               </div>
                             </div>
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-6 mb-2">
                               <h6 class="mb-2 pb-1">Sexe: </h6>
-                              <div class="form-check form-check-inline">
+                              <div class="form-check form-check-inline" >
                                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
                                   value="option1" checked />
                                 <label class="form-check-label" for="femaleGender">Femme</label>
@@ -103,19 +101,19 @@ class RegisterView
                             </div>
                           </div>
 
-                        <div class="form-outline mb-4">
+                        <div class="form-outline mb-2">
                         <input type="email" id="form3Example97" class="form-control form-control-lg" />
                         <label class="form-label" for="form3Example97">Adresse mail</label>
                         </div>
 
                         <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="text" name="pseudo" id="form3Example1m" class="form-control form-control-lg" />
                             <label class="form-label" for="form3Example1m">Nom d'utilisateur</label>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-2">
                             <div class="form-outline">
                             <input type="tel" id="form3Example1n" class="form-control form-control-lg" />
                             <label class="form-label" for="form3Example1n">Téléphone</label>
@@ -125,13 +123,13 @@ class RegisterView
 
 
                          <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-5">
                             <div class="form-outline">
                             <input type="password" name="password" id="mdpText" class="form-control form-control-lg" />
                             <label class="form-label" for="mdpText">Mot de passe</label>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-5">
                             <div class="form-outline">
                             <input type="password" id="confMDPText" class="form-control form-control-lg" />
                             <label class="form-label" for="confMDPText">Confirmer mot de passe</label>
@@ -140,7 +138,7 @@ class RegisterView
                         </div>
 
                         <div class="d-flex justify-content-end pt-3">
-                        <button type="button" class="btn btn-light btn-lg">Tout supprimer</button>
+                        <button type="button" class="btn btn-dark btn-lg" style="background-color: rgb(50, 50, 50);">Tout supprimer</button>
                         <button type="submit" class="btn btn-warning btn-lg ms-2">Confirmer</button>
                         </div>
 
