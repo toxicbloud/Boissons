@@ -5,6 +5,7 @@ require_once('conf/db.php');
 include('Donnees.inc.php');
 session_start();
 
+use boissons\controls\CocktailController;
 use boissons\controls\AuthController;
 use boissons\controls\Authentication;
 use boissons\exceptions\WrongPasswordException;
@@ -16,6 +17,8 @@ use \Slim\Container;
 use Slim\Http\Request;
 use boissons\models\User;
 use boissons\views\LoginView;
+use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Collection;
 
 $configuration = [
     'settings' => [
@@ -34,65 +37,62 @@ $app->get(
     }
 );
 
-
-$app->get('/cocktails', function () {
-    $content = "";
-    $normalizeChars = array(
-        'Š'=>'S', 'š'=>'s', 'Ð'=>'Dj','Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A',
-        'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E', 'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I',
-        'Ï'=>'I', 'Ñ'=>'N', 'Ń'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U',
-        'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss','à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a',
-        'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i',
-        'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ń'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u',
-        'ú'=>'u', 'û'=>'u', 'ü'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y', 'ƒ'=>'f',
-        'ă'=>'a', 'î'=>'i', 'â'=>'a', 'ș'=>'s', 'ț'=>'t', 'Ă'=>'A', 'Î'=>'I', 'Â'=>'A', 'Ș'=>'S', 'Ț'=>'T',
-    );
-    //eager load composition
-    $cocktails = Cocktail::all()->load('composition');
-    $content .= "<h1>Liste des cocktails</h1>";
-    foreach ($cocktails as $cocktail) {
-        $content .= "<h2>" . $cocktail->name . "</h2>";
-        // first letter is uppercase
-
-        $imageName = ucfirst(strtr($cocktail->name,$normalizeChars)) . ".jpg";
-        // replace space with underscore
-        $imageName = str_replace(' ', '_', $imageName);
-        if (file_exists($GLOBALS['c']['imgPath'] . $imageName)) {
-            $content .= "<img src='" . $GLOBALS['c']['imgPath'] .$imageName. "' alt='photo du cocktail " . $cocktail->name . "' width='200px' height='200px'>";
-        }else{
-            $content  .= "<img src='" . $GLOBALS['c']['imgPath'] . "default.png' alt='photo du cocktail " . $cocktail->name . "' width='200px' height='200px'>";
-        }
-        $content .= "<p>". $cocktail->preparation . "</p>";
-        $ingredients = explode('|', $cocktail->ingredients);
-        $content .= "<ul>";
-        foreach ($ingredients as $ingredient) {
-            $content .= "<li>" . $ingredient . "</li>";
-        }
-        $content .= "</ul>";
-        $content .= "<ul>";
-        $aliments = $cocktail->composition;
-        foreach ($aliments as $aliment) {
-            $content .= "<li>" . $aliment->name . "</li>";
-        }
-        $content .= "</ul>";
+$app->get('/cocktail/{id}', CocktailController::class . ':getCocktail');
+$app->get('/cocktails', CocktailController::class . ':getCocktails');
+$app->get('/aliment/{id}',function ($rq, $rs, $args) {
+    $id = $args['id'];
+    $aliments = Aliment::where('id', '=',$id)->with('superCategories','sousCategories','cocktails')->first();
+    $content = "<h1>$aliments->name</h1>";
+    $elements = Aliment::where('id', '=',$id)->first()->getTopPath();
+    $test = Aliment::where('id', '=',$id)->first()->pathToRoot();
+    $content .= "<h3>";
+    $content .= <<<HTML
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"><ol class="breadcrumb">
+HTML;
+    for ($i=0; $i < $test->count()-1 ; $i++) {
+        $id = $test[$i]->id;
+        $name = $test[$i]->name;
+        $content .= "<li class='breadcrumb-item'><a href='/aliment/$id'>$name</a> </li>";
     }
-    return $content;
-});
-$app->get('/aliment/{name}',function ($rq, $rs, $args) {
-    $name = $args['name'];
-    $content = "<h1>$name</h1>";
+    $id = $test[$test->count()-1]->id;
+    $name = $test[$test->count()-1]->name;
+    $content .= "<li class='breadcrumb-item aria-current='page' active'><a>$name</a> </li> ";
+    $content .= "</ol></nav> </h3>";
     $content .= "Super categories:<br>";
-    $aliment = Aliment::where('name', 'like', $name)->first()->superCategories;
-    foreach ($aliment as $categorie) {
-        $content .= "<li>" . $categorie->name . "</li>";
+    $content .= "<ul>";
+    foreach ($aliments->superCategories as $categorie) {
+        $content .= "<li>" . "<a href='/aliment/$categorie->id'>$categorie->name</a> ". "</li>";
     }
+    $content .= "</ul>";
     $content .= "<br>";
-    $content .= "Sous categories:<br>";
-    $aliment = Aliment::where('name', 'like', $name)->first()->sousCategories;
-    foreach ($aliment as $categorie) {
-        $content .= "<li>" . $categorie->name . "</li>";
+    if($aliments->sousCategories->count() > 0){
+        $content .= "Sous categories:<br>";
+        $content .= "<ul>";
+        foreach ($aliments->sousCategories as $categorie) {
+            $content .= "<li>" . "<a href='/aliment/$categorie->id'>$categorie->name</a> ". "</li>";
+        }
+        $content .= "</ul>";
+        $content .= "<br>";
     }
-    return $content;
+    $content .= "Cocktails utilisant cet aliment :<br>";
+    $content .= "<ul>";
+    foreach ($aliments->cocktails as $cocktail) {
+        $content .= "<li> <a href='/cocktail/$cocktail->id'>$cocktail->name</a> </li>";
+    }
+    $content .= "</ul>";
+    // DB::connection()->enableQueryLog();
+    // $cocktails = Aliment::getCocktails($aliments);
+    // foreach ($cocktails as $cocktail) {
+    //     $content .= "<li>" . $cocktail->name . "</li>";
+    // }
+    // $i=0;
+    // foreach( DB::getQueryLog() as $q){
+    //     $i++;
+    // };
+    // echo $i;
+    
+    $view = new View($content, $aliments->name, $rq);
+    return $view->getHtml();
 });
 $app->get('/login', function ($rq, $rs, $args) {
     return AuthController::showLoginForm($rq, $rs, $args);

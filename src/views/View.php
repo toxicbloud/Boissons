@@ -73,6 +73,9 @@ class View
                             <li class="nav-item">
                             <a class="nav-link" href="$path/cocktails">Cocktails</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="$path/aliment/239">Aliments</a>
+                            </li>
                         </ul>
                         <div class="navbar-nav justify-content-end">
 END;
