@@ -21,7 +21,7 @@ class SearchView
     {
         $path = $this->rq->getUri()->getBasePath();
         $temp = <<<END
-        <div class="text-center">
+        <div class="text-center" style="padding-top:10px;">
         <form autocomplete="off" action="" style="margin-bottom: 10px;">
             <div class="autocomplete" style="width:300px;">
                 <input id="Myingredients" type="text" name="Myingredients" placeholder="Ingrédients">
