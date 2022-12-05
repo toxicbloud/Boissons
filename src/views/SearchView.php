@@ -22,13 +22,15 @@ class SearchView
         $path = $this->rq->getUri()->getBasePath();
         $temp = <<<END
         <div class="text-center" style="padding-top:10px;">
-        <form autocomplete="off" action="" style="margin-bottom: 10px;">
+        <form id="form" autocomplete="off" action="" style="margin-bottom: 10px;">
             <div class="autocomplete" style="width:300px;">
                 <input id="Myingredients" type="text" name="Myingredients" placeholder="Ingrédients">
             </div>
             <input type="submit" id="searchButton">
         </form>
         <div id="listIngredients">
+        </div>
+        <div id="listCocktails">
         </div>
         </div>
 END;

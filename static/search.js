@@ -1,6 +1,7 @@
 const choix = new Array();
 
 function autocomplete(inp, arr) {
+    // arr = arr.map(ingredient => ingredient.name);
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
     var currentFocus;
@@ -22,14 +23,14 @@ function autocomplete(inp, arr) {
         /*for each item in the array...*/
         for (i = 0; i < arr.length; i++) {
             /*check if the item starts with the same letters as the text field value:*/
-            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+            if (arr[i].name.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
                 /*create a DIV element for each matching element:*/
                 b = document.createElement("DIV");
                 /*make the matching letters bold:*/
-                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                b.innerHTML += arr[i].substr(val.length);
+                b.innerHTML = "<strong>" + arr[i].name.substr(0, val.length) + "</strong>";
+                b.innerHTML += arr[i].name.substr(val.length);
                 /*insert a input field that will hold the current array item's value:*/
-                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                b.innerHTML += "<input type='hidden' value='" + arr[i].name + "'>";
                 /*execute a function when someone clicks on the item value (DIV element):*/
                 b.addEventListener("click", function (e) {
                     /*insert the value for the autocomplete text field:*/
@@ -68,7 +69,8 @@ function autocomplete(inp, arr) {
             // si la liste d'auto complétion n'est pas affichée
             if (!x) {
                 if (choix.findIndex(element => element == inp.value) == -1) {
-                    choix.push(inp.value);
+                    choix.push(arr.find(ingredient => ingredient.name == inp.value));
+                    console.log(choix);
                     const listIngredients = document.getElementById("listIngredients");
                     const li = document.createElement("span");
                     li.className = "badge bg-warning";
@@ -143,8 +145,34 @@ window.onload = async function () {
     const res = await fetch('/aliments')
     const data = await res.json();
     data.forEach(ingredient => {
-        ingredients.push(ingredient.name);
+        ingredients.push(ingredient);
     });
     autocomplete(document.getElementById("Myingredients"), ingredients);
     const searchButton = document.getElementById("searchButton");
+    const form = document.getElementById("form");
+    searchButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const choicesId = choix.map(ingredient => ingredient.id);
+        // post all the ingredients to the server
+        fetch('/cocktails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: '{"ingredients":' + JSON.stringify(choicesId) + '}'
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+            const listCocktails = document.getElementById("listCocktails");
+            listCocktails.innerHTML = "";
+            data.forEach(cocktail => {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.setAttribute("href", "/cocktail/" + cocktail.id);
+                a.textContent = cocktail.name;
+                li.appendChild(a);
+                listCocktails.appendChild(li);
+            });
+        }
+        );
+    });
 }

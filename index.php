@@ -42,6 +42,16 @@ $app->get(
 $app->get('/cocktail/{id}', CocktailController::class . ':getCocktail');
 $app->get('/cocktails', CocktailController::class . ':getCocktails');
 $app->get('/aliments', CocktailController::class . ':getAliments');
+$app->post('/cocktails', function ($rq, $rs, $args) {
+    // get array of ingredients
+    $ingredients = $rq->getParsedBodyParam('ingredients');
+    // get array of cocktails
+    $cocktails = Cocktail::whereHas('composition', function ($query) use ($ingredients) {
+        $query->whereIn('id', $ingredients);
+    })->get();
+    // return json
+    return $rs->withJson($cocktails);
+});
 $app->get('/aliment/{id}',function ($rq, $rs, $args) {
     $id = $args['id'];
     $aliments = Aliment::where('id', '=',$id)->with('superCategories','sousCategories','cocktails')->first();
