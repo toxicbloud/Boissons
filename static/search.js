@@ -68,7 +68,7 @@ function autocomplete(inp, arr) {
             }
             // si la liste d'auto complétion n'est pas affichée
             if (!x) {
-                if (choix.findIndex(element => element == inp.value) == -1) {
+                if (choix.findIndex(element => element.name == inp.value) == -1) {
                     choix.push(arr.find(ingredient => ingredient.name == inp.value));
                     console.log(choix);
                     const listIngredients = document.getElementById("listIngredients");
@@ -153,6 +153,8 @@ window.onload = async function () {
     searchButton.addEventListener("click", function (e) {
         e.preventDefault();
         const choicesId = choix.map(ingredient => ingredient.id);
+        const loading = document.getElementById("loading");
+        loading.style.display = "block";
         // post all the ingredients to the server
         fetch('/cocktails', {
             method: 'POST',
@@ -164,6 +166,10 @@ window.onload = async function () {
             console.log(data);
             const listCocktails = document.getElementById("listCocktails");
             listCocktails.innerHTML = "";
+            loading.style.display = "none";
+            const result = document.getElementById("result");
+            result.style.display = "block";
+            result.textContent = "Résultats : " + data.length;
             data.forEach(cocktail => {
                 const li = document.createElement("li");
                 const a = document.createElement("a");

@@ -30,7 +30,11 @@ class SearchView
         </form>
         <div id="listIngredients">
         </div>
-        <div id="listCocktails">
+        <div id="loading" class="spinner-border" role="status" style="display:none;">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h2 id="result" style="display:none;">Résultats</h2>
+        <div id="listCocktails" style="margin-top:10px;">
         </div>
         </div>
 END;

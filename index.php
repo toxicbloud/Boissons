@@ -46,11 +46,21 @@ $app->post('/cocktails', function ($rq, $rs, $args) {
     // get array of ingredients
     $ingredients = $rq->getParsedBodyParam('ingredients');
     // get array of cocktails
-    $cocktails = Cocktail::whereHas('composition', function ($query) use ($ingredients) {
-        $query->whereIn('id', $ingredients);
-    })->get();
-    // return json
-    return $rs->withJson($cocktails);
+    $ingredients = Aliment::whereIn('id', $ingredients)->with('sousCategories','cocktails')->get();
+    $cocktails = $ingredients->flatMap(function ($aliment) {
+        return Aliment::getCocktails($aliment);
+    })->unique();
+    // select only name and id into unique collection
+    $cocktails = $cocktails->map(function ($cocktail) {
+        return ['id' => $cocktail->id, 'name' => $cocktail->name];
+    });
+    // make collection unique
+    $cocktails = $cocktails->unique();
+    return $rs->withJson(array_values($cocktails->toArray()));
+    // return $rs->withJson($cocktails);
+    // $cocktails = Cocktail::whereHas('composition', function ($query) use ($ingredients) {
+    //     $query->whereIn('id', $ingredients);
+    // })->get();
 });
 $app->get('/aliment/{id}',function ($rq, $rs, $args) {
     $id = $args['id'];
