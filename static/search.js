@@ -1,4 +1,5 @@
 const choix = new Array();
+
 function autocomplete(inp, arr) {
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
@@ -65,12 +66,39 @@ function autocomplete(inp, arr) {
                 if (x) x[currentFocus].click();
             }
             // si la liste d'auto complétion n'est pas affichée
-            if(!x){
-                choix.push(inp.value);
-                const listIngredients = document.getElementById("listIngredients");
-                const li = document.createElement("li");
-                li.innerHTML = inp.value;
-                listIngredients.appendChild(li);
+            if (!x) {
+                if (choix.findIndex(element => element == inp.value) == -1) {
+                    choix.push(inp.value);
+                    const listIngredients = document.getElementById("listIngredients");
+                    const li = document.createElement("span");
+                    li.className = "badge bg-warning";
+                    const button = document.createElement("button");
+                    button.className = "btn-close";
+                    button.setAttribute("type", "button");
+                    button.setAttribute("aria-label", "Close");
+                    button.addEventListener("click", function (e) {
+                        const index = choix.findIndex(element => element == inp.value);
+                        choix.splice(index, 1);
+                        // li.remove();
+                        // make the li barrel roll with progressive fade out
+                        li.style.transform = "rotate(360deg)";
+                        li.style.transition = "transform 1s";
+                        var opacity = 1;
+                        const n = setInterval(function () {
+                            li.style.opacity = opacity -= 0.1;
+                        }, 50);
+                        setTimeout(function () {
+                            clearInterval(n);
+                            li.remove();
+                        }, 600);
+                    });
+                    li.textContent = inp.value;
+                    li.appendChild(button);
+                    listIngredients.appendChild(li);
+                } else {
+                    // shake animation on search bar  with css
+                    $("#Myingredients").effect("shake", 200);
+                }
                 inp.value = "";
             }
         }
