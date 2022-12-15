@@ -73,7 +73,7 @@ function autocomplete(inp, arr) {
             }
             // si la liste d'auto complétion n'est pas affichée
             if (!x) {
-                if (!Array.from(choix.values()).includes(inp.value)&&inp.value!="") {
+                if (!Array.from(choix.values()).includes(inp.value) && inp.value != "") {
                     // choix.push(arr.find(ingredient => ingredient.name == inp.value));
                     const ingredient = arr.find(ingredient => ingredient.name == inp.value);
                     choix.set(ingredient.id, ingredient.name);
@@ -84,9 +84,15 @@ function autocomplete(inp, arr) {
                     button.className = "btn-close";
                     button.setAttribute("type", "button");
                     button.setAttribute("aria-label", "Close");
+                    // center text vertically
                     button.addEventListener("click", function (e) {
-                        const index = choix.findIndex(element => element == inp.value);
-                        choix.splice(index, 1);
+                        const string = e.target.parentNode.textContent;
+                        choix.forEach((value, key) => {
+                            if (value == string) {
+                                choix.delete(key);
+                                return;
+                            }
+                        });
                         // make the li barrel roll with progressive fade out
                         li.style.transform = "rotate(360deg)";
                         li.style.transition = "transform 1s";
@@ -181,7 +187,6 @@ window.onload = async function () {
                 li.appendChild(a);
                 listCocktails.appendChild(li);
             });
-        }
-        );
+        });
     });
 }
