@@ -15,4 +15,7 @@ class User extends \Illuminate\Database\Eloquent\Model
     // public function reservations() {
     //     return $this->hasMany('wish\models\Reservation', 'user_id');
     // }
+    public function cocktailsFavori(){
+        return $this->hasManyThrough(Cocktail::class, Panier::class, 'id_user', 'id', 'id', 'id_cocktail');
+    }
 }

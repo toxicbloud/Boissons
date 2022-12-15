@@ -72,7 +72,7 @@ $sql = "DROP TABLE IF EXISTS compositionPanier";
 echo $pdo->query($sql) ? '<li>RESET table compositionPanier </li>' : 'PANIER KO';
 $sql = "CREATE TABLE IF NOT EXISTS compositionPanier (
     id_user INT(6) UNSIGNED NOT NULL,
-    id_aliment INT(6) UNSIGNED NOT NULL,
+    id_cocktail INT(6) UNSIGNED NOT NULL,
     dateAjout DATE,
     PRIMARY KEY (id_user, id_aliment),
     FOREIGN KEY (id_user) REFERENCES user(id),

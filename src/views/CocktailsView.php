@@ -38,7 +38,7 @@ class CocktailsView
     private function getItemHtml(\boissons\models\Cocktail $cocktail){
         $imageFileName = $this->rq->getUri()->getBasePath()."/Photos/".$this->getImageFileName($cocktail->name);
         $html = <<<END
-        <li class="list-group-item" onclick="location.href='/cocktail/$cocktail->id';">
+        <li class="list-group-item">
             <!-- Custom content-->
             <div class="media align-items-lg-center flex-column flex-lg-row p-3">
             <div class="media-body order-2 order-lg-1">
@@ -46,9 +46,9 @@ class CocktailsView
             <p class="font-italic text-muted mb-0 small">$cocktail->preparation</p>
             </div>
             <div class="row">
-                <img src="$imageFileName" alt="Generic placeholder image" width="200" class="mt-2 ml-lg-5 order-1 order-lg-2 col-md-4">
-                <div class="mt-5 col-md-8">
-                <ul class="list-group list-group">
+            <img src="$imageFileName" alt="Generic placeholder image" width="200" class="mt-2 ml-lg-5 order-1 order-lg-2 col-md-4">
+            <div class="mt-5 col-md-8">
+            <ul class="list-group list-group">
 END;
         foreach(explode('|',$cocktail->ingredients) as $ingredient){
             $html .= "<li class=\"list-group-item\">$ingredient</li>";
@@ -57,6 +57,9 @@ END;
                 </ul>
                 </div>
             </div>
+            <div class="d-flex align-items-center justify-content-between mt-1">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.href='/cocktail/$cocktail->id';">Voir</button>
+                <i class="bi bi-heart justify-content-end"></i>
             </div> <!-- End -->
         </li>
 END;
