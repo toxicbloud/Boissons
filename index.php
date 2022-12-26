@@ -113,18 +113,7 @@ $app->post('/favorite/{id}', FavoriteController::class . ':addFavorite');
 $app->delete('/favorite/{id}', FavoriteController::class . ':deleteFavorite');
 $app->delete('/favorite', FavoriteController::class . ':deleteAllFavorites');
 $app->get('/favorite',FavoriteController::class . ':getFavorites');
-$app->get('/favorite/count',function($rq,$rs,$args){
-    // return number of favs
-    $nbFavs = 0;
-    if(Authentication::isConnected()){
-        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-    }else{
-        if(isset($_SESSION['favorites'])){
-            $nbFavs = count($_SESSION['favorites']);
-        }
-    }
-    return $rs->withJson($nbFavs);
-});
+$app->get('/favorite/count',FavoriteController::class . ':getFavoritesCount');
 $app->get('/favorite/list',function($rq,$rs,$args){
     $list = [];
     if(Authentication::isConnected()){

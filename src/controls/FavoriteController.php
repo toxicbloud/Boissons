@@ -69,6 +69,19 @@ class FavoriteController
         $view = new View($content, "Vos favoris", $rq);
         return $view->getHtml();
     }
+    function getFavoritesCount($rq, $rs, $args)
+    {
+        // return number of favs
+        $nbFavs = 0;
+        if (Authentication::isConnected()) {
+            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                $nbFavs = count($_SESSION['favorites']);
+            }
+        }
+        return $rs->withJson($nbFavs);
+    }
     function deleteFavorite($rq, $rs, $args)
     {
         $id = $args['id'];
