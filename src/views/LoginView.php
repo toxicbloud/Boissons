@@ -4,22 +4,37 @@ namespace boissons\views;
 
 class LoginView
 {
-    private $error;
-    public function __construct($rq, $error = NULL)
-    {
-        $this->rq = $rq;
-        $this->error = $error;
+  public function __construct($rq)
+  {
+    $this->rq = $rq;
+  }
+  public function render()
+  {
+    $content = $this->html();
+    $vue = new View($content, 'Connexion', $this->rq);
+    return $vue->getHtml();
+  }
+  public function html()
+  {
+    $path = $this->rq->getUri()->getBasePath();
+    $info = '';
+    switch ($this->rq->getQueryParam('error')) {
+      case 'wrongpassword':
+        $info = <<<END
+        <div id="info" class="text-danger  mb-2">
+          mot de passe incorrect
+        </div>
+        END;
+        break;
+      case 'wrongusername':
+        $info = <<<END
+        <div id="info" class="text-danger  mb-2">
+            identifiant incorrect
+        </div>
+        END;
+        break;
     }
-    public function render()
-    {
-        $content = $this->html();
-        $vue = new View($content, 'Connexion', $this->rq);
-        return $vue->getHtml();
-    }
-    public function html()
-    {
-        $path = $this->rq->getUri()->getBasePath();
-        $temp = <<<END
+    $temp = <<<END
         <style>
         body{
             background-image:url('$path/Photos/imageLogin.jpeg');
@@ -52,7 +67,7 @@ class LoginView
                           <label for="inputPassword" class="sr-only">Password</label>
                           <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required="">
                           </div>
-
+                          $info
                         <button class="btn btn-lg btn-secondary btn-block" type="submit" style="background-color: rgb(50, 50, 50);">Connexion</button>
                     </form>
                     </body>
@@ -63,6 +78,6 @@ class LoginView
               </div>
             </div>
 END;
-        return $temp;
-    }
+    return $temp;
+  }
 }

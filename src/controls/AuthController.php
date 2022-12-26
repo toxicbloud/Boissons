@@ -13,12 +13,15 @@ class AuthController
     {
         $pseudo = $rq->getParsedBodyParam('pseudo');
         $u = User::where('username', $pseudo)->first();
+        if ($u == null) {
+            return $rs->withRedirect('/login?error=wrongusername');
+        }
         $password = $rq->getParsedBodyParam('password');
         try {
             Authentication::authenticate($u, $password);
             return $rs->withRedirect('/');
         } catch (WrongPasswordException $th) {
-            return $rs->withRedirect('/login');
+            return $rs->withRedirect('/login?error=wrongpassword');
         }
     }
     static function register($rq, $rs, $args)
