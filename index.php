@@ -114,18 +114,5 @@ $app->delete('/favorite/{id}', FavoriteController::class . ':deleteFavorite');
 $app->delete('/favorite', FavoriteController::class . ':deleteAllFavorites');
 $app->get('/favorite',FavoriteController::class . ':getFavorites');
 $app->get('/favorite/count',FavoriteController::class . ':getFavoritesCount');
-$app->get('/favorite/list',function($rq,$rs,$args){
-    $list = [];
-    if(Authentication::isConnected()){
-        $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
-        foreach ($panier as $cocktail) {
-            $list[] = $cocktail->id_cocktail;
-        }
-    }else{
-        if(isset($_SESSION['favorites'])){
-            $list = $_SESSION['favorites'];
-        }
-    }
-    return $rs->withJson($list);
-});
+$app->get('/favorite/list',FavoriteController::class . ':getFavoritesList');
 $app->run();

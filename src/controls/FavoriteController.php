@@ -4,6 +4,8 @@ namespace boissons\controls;
 
 use \boissons\models\Panier;
 use \boissons\models\Cocktail;
+use boissons\views\CocktailView;
+use boissons\views\FavoriteView;
 use \boissons\views\View;
 
 class FavoriteController
@@ -29,7 +31,8 @@ class FavoriteController
                 $_SESSION['favorites'] = [];
             }
             if (!in_array($id, $_SESSION['favorites'])) {
-                $_SESSION['favorites'][] = $id;
+                // attention on doit caster en int pour éviter de faire un code pour les entier et un autre pour les string en JS
+                $_SESSION['favorites'][] = (int) $id;
             }
         }
 
@@ -46,28 +49,19 @@ class FavoriteController
     }
     function getFavorites($rq, $rs, $args)
     {
-        $content = "";
+        $cocktails = null;
         if (Authentication::isConnected()) {
             $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
-            $content .= "<h1>Vos favoris</h1>";
-            $content .= "<ul>";
-            foreach ($panier as $cocktail) {
-                $content .= "<li>" . "<a href='/cocktail/{$cocktail->cocktail_id}'>{$cocktail->cocktail->name}</a> " . "</li>";
-            }
-            $content .= "</ul>";
+            $cocktails = $panier->map(function ($item, $key) {
+                return $item->cocktail;
+            });
         } else {
-            $content .= "<h1>Vos favoris</h1>";
-            $content .= "<ul>";
             if (isset($_SESSION['favorites'])) {
-                foreach ($_SESSION['favorites'] as $id) {
-                    $cocktail = Cocktail::where('id', '=', $id)->first();
-                    $content .= "<li>" . "<a href='/cocktail/$cocktail->id'>$cocktail->name</a> " . "</li>";
-                }
+                $cocktails = Cocktail::whereIn('id', $_SESSION['favorites'])->get();
             }
-            $content .= "</ul>";
         }
-        $view = new View($content, "Vos favoris", $rq);
-        return $view->getHtml();
+        $view = new FavoriteView($rq, $cocktails);
+        return $view->render();
     }
     function getFavoritesCount($rq, $rs, $args)
     {
@@ -81,6 +75,21 @@ class FavoriteController
             }
         }
         return $rs->withJson($nbFavs);
+    }
+    function getFavoritesList($rq, $rs, $args)
+    {
+        $list = [];
+        if (Authentication::isConnected()) {
+            $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
+            foreach ($panier as $cocktail) {
+                $list[] = $cocktail->id_cocktail;
+            }
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                $list = $_SESSION['favorites'];
+            }
+        }
+        return $rs->withJson($list);
     }
     function deleteFavorite($rq, $rs, $args)
     {
