@@ -112,30 +112,7 @@ $app->post('/login', AuthController::class . ':login');
 $app->post('/favorite/{id}', FavoriteController::class . ':addFavorite');
 $app->delete('/favorite/{id}', FavoriteController::class . ':deleteFavorite');
 $app->delete('/favorite', FavoriteController::class . ':deleteAllFavorites');
-$app->get('/favorite',function($rq, $rs, $args){
-    $content = "";
-    if(Authentication::isConnected()){
-        $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
-        $content .= "<h1>Vos favoris</h1>";
-        $content .= "<ul>";
-        foreach ($panier as $cocktail) {
-            $content .= "<li>" . "<a href='/cocktail/{$cocktail->cocktail_id}'>{$cocktail->cocktail->name}</a> ". "</li>";
-        }
-        $content .= "</ul>";
-    }else{
-        $content .= "<h1>Vos favoris</h1>";
-        $content .= "<ul>";
-        if(isset($_SESSION['favorites'])){
-            foreach ($_SESSION['favorites'] as $id) {
-                $cocktail = Cocktail::where('id', '=', $id)->first();
-                $content .= "<li>" . "<a href='/cocktail/$cocktail->id'>$cocktail->name</a> ". "</li>";
-            }
-        }
-        $content .= "</ul>";
-    }
-    $view = new View($content, "Vos favoris", $rq);
-    return $view->getHtml();
-});
+$app->get('/favorite',FavoriteController::class . ':getFavorites');
 $app->get('/favorite/count',function($rq,$rs,$args){
     // return number of favs
     $nbFavs = 0;

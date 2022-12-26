@@ -3,6 +3,8 @@
 namespace boissons\controls;
 
 use \boissons\models\Panier;
+use \boissons\models\Cocktail;
+use \boissons\views\View;
 
 class FavoriteController
 {
@@ -41,6 +43,31 @@ class FavoriteController
             }
         }
         return $rs->withJson($nbFavs);
+    }
+    function getFavorites($rq, $rs, $args)
+    {
+        $content = "";
+        if (Authentication::isConnected()) {
+            $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
+            $content .= "<h1>Vos favoris</h1>";
+            $content .= "<ul>";
+            foreach ($panier as $cocktail) {
+                $content .= "<li>" . "<a href='/cocktail/{$cocktail->cocktail_id}'>{$cocktail->cocktail->name}</a> " . "</li>";
+            }
+            $content .= "</ul>";
+        } else {
+            $content .= "<h1>Vos favoris</h1>";
+            $content .= "<ul>";
+            if (isset($_SESSION['favorites'])) {
+                foreach ($_SESSION['favorites'] as $id) {
+                    $cocktail = Cocktail::where('id', '=', $id)->first();
+                    $content .= "<li>" . "<a href='/cocktail/$cocktail->id'>$cocktail->name</a> " . "</li>";
+                }
+            }
+            $content .= "</ul>";
+        }
+        $view = new View($content, "Vos favoris", $rq);
+        return $view->getHtml();
     }
     function deleteFavorite($rq, $rs, $args)
     {
