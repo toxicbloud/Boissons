@@ -8,6 +8,7 @@ session_start();
 use boissons\controls\CocktailController;
 use boissons\controls\AuthController;
 use boissons\controls\Authentication;
+use boissons\controls\FavoriteController;
 use boissons\exceptions\WrongPasswordException;
 use boissons\models\Aliment;
 use boissons\models\Cocktail;
@@ -108,41 +109,7 @@ $app->get('/register', function ($rq, $rs, $args) {
 });
 $app->post('/register', AuthController::class . ':register');
 $app->post('/login', AuthController::class . ':login');
-$app->post('/favorite/{id}', function ($rq, $rs, $args) {
-    $id = $args['id'];
-    // test if user is logged in
-    if (Authentication::isConnected()) {
-        // add fav in database
-        try {
-            $panier = new Panier();
-            $panier->id_user = Authentication::getProfile()->id;
-            $panier->id_cocktail = $id;
-            $panier->save();
-        } catch (Exception $e) {
-            // return 404 not found
-            return $rs->withStatus(404);    
-        }
-    } else {
-        // add fav in session only if not already in
-        if (!isset($_SESSION['favorites'])) {
-            $_SESSION['favorites'] = [];
-        }
-        if (!in_array($id, $_SESSION['favorites'])) {
-            $_SESSION['favorites'][] = $id;
-        }
-    }
-
-    // send number of favs
-    $nbFavs = 0;
-    if (Authentication::isConnected()) {
-        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-    } else {
-        if (isset($_SESSION['favorites'])) {
-            $nbFavs = count($_SESSION['favorites']);
-        }
-    }
-    return $rs->withJson($nbFavs);
-});
+$app->post('/favorite/{id}', FavoriteController::class . ':addFavorite');
 $app->delete('/favorite/{id}',function($rq, $rs, $args){
     $id = $args['id'];
     if(Authentication::isConnected()){
