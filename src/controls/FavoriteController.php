@@ -1,6 +1,7 @@
 <?php
 
 namespace boissons\controls;
+
 use \boissons\models\Panier;
 
 class FavoriteController
@@ -31,6 +32,30 @@ class FavoriteController
         }
 
         // send number of favs
+        $nbFavs = 0;
+        if (Authentication::isConnected()) {
+            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                $nbFavs = count($_SESSION['favorites']);
+            }
+        }
+        return $rs->withJson($nbFavs);
+    }
+    function deleteFavorite($rq, $rs, $args)
+    {
+        $id = $args['id'];
+        if (Authentication::isConnected()) {
+            Panier::where('id_user', '=', Authentication::getProfile()->id)->where('id_cocktail', '=', $id)->delete();
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                $key = array_search($id, $_SESSION['favorites']);
+                if ($key !== false) {
+                    unset($_SESSION['favorites'][$key]);
+                }
+            }
+        }
+        // return number of favs
         $nbFavs = 0;
         if (Authentication::isConnected()) {
             $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
