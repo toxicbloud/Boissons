@@ -66,4 +66,24 @@ class FavoriteController
         }
         return $rs->withJson($nbFavs);
     }
+    function deleteAllFavorites($rq, $rs, $args)
+    {
+        if (Authentication::isConnected()) {
+            Panier::where('id_user', '=', Authentication::getProfile()->id)->delete();
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                unset($_SESSION['favorites']);
+            }
+        }
+        // return number of favs
+        $nbFavs = 0;
+        if (Authentication::isConnected()) {
+            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+        } else {
+            if (isset($_SESSION['favorites'])) {
+                $nbFavs = count($_SESSION['favorites']);
+            }
+        }
+        return $rs->withJson($nbFavs);
+    }
 }

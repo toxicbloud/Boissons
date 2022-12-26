@@ -111,25 +111,7 @@ $app->post('/register', AuthController::class . ':register');
 $app->post('/login', AuthController::class . ':login');
 $app->post('/favorite/{id}', FavoriteController::class . ':addFavorite');
 $app->delete('/favorite/{id}', FavoriteController::class . ':deleteFavorite');
-$app->delete('/favorite',function($rq, $rs, $args){
-    if(Authentication::isConnected()){
-        Panier::where('id_user', '=', Authentication::getProfile()->id)->delete();
-    }else{
-        if(isset($_SESSION['favorites'])){
-            unset($_SESSION['favorites']);
-        }
-    }
-    // return number of favs
-    $nbFavs = 0;
-    if(Authentication::isConnected()){
-        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-    }else{
-        if(isset($_SESSION['favorites'])){
-            $nbFavs = count($_SESSION['favorites']);
-        }
-    }
-    return $rs->withJson($nbFavs);
-});
+$app->delete('/favorite', FavoriteController::class . ':deleteAllFavorites');
 $app->get('/favorite',function($rq, $rs, $args){
     $content = "";
     if(Authentication::isConnected()){
