@@ -67,8 +67,9 @@ class Authentication
         if (isset($_SESSION['user'])) return true;
         else return false;
     }
-
-    static function checkAccessRight()
+    static function getProfile()
     {
+        if (Authentication::isConnected()) return $_SESSION['user'];
+        else return null;
     }
 }

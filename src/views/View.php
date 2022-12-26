@@ -64,6 +64,7 @@ class View
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+            <script src="$path/static/index.js"></script>
           </head>
         <body>
             <nav class="navbar navbar-expand-lg bg-light">
@@ -92,6 +93,14 @@ class View
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="$path/aliment/239">Aliments</a>
+                            </li>
+
+                            <!-- favorite button with icon and number of fav -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="$path/favorite">
+                                    <i class="bi bi-heart-fill"></i>
+                                    <span id="favcount" class="badge bg-info rounded-pill"></span>
+                                </a>
                             </li>
                         </ul>
                         <div class="navbar-nav justify-content-end">

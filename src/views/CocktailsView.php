@@ -13,6 +13,7 @@ class CocktailsView
     {
         $content = $this->html();
         $vue = new View($content, 'Cocktails', $this->rq);
+        $vue->addJSScript('cocktails.js');
         return $vue->getHtml();
     }
     private function getImageFileName($name){
@@ -46,7 +47,7 @@ class CocktailsView
             <p class="font-italic text-muted mb-0 small">$cocktail->preparation</p>
             </div>
             <div class="row">
-            <img src="$imageFileName" alt="Generic placeholder image" width="200" class="mt-2 ml-lg-5 order-1 order-lg-2 col-md-4">
+            <img src="$imageFileName" alt="Generic placeholder image" class="ml-lg-5 mt-2 order-1 order-lg-2 col-md-4 img-fluid img-thumbnail">
             <div class="mt-5 col-md-8">
             <ul class="list-group list-group">
 END;
@@ -59,7 +60,7 @@ END;
             </div>
             <div class="d-flex align-items-center justify-content-between mt-1">
                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.href='/cocktail/$cocktail->id';">Voir</button>
-                <i class="bi bi-heart justify-content-end"></i>
+                <i class="bi bi-heart justify-content-end" data-idCocktail="$cocktail->id"></i>
             </div> <!-- End -->
         </li>
 END;

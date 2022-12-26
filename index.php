@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_DEPRECATED));
+// error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_DEPRECATED));
 require_once('vendor/autoload.php');
 require_once('conf/db.php');
 include('Donnees.inc.php');
@@ -20,6 +20,7 @@ use boissons\views\LoginView;
 use boissons\views\SearchView;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
+use boissons\models\Panier;
 
 $configuration = [
     'settings' => [
@@ -126,4 +127,117 @@ $app->get('/register', function ($rq, $rs, $args) {
 });
 $app->post('/register', AuthController::class . ':register');
 $app->post('/login', AuthController::class . ':login');
+$app->post('/favorite/{id}', function ($rq, $rs, $args) {
+    $id = $args['id'];
+    // test if user is logged in
+    if (Authentication::isConnected()) {
+        // add fav in database
+        try {
+            $panier = new Panier();
+            $panier->id_user = Authentication::getProfile()->id;
+            $panier->id_cocktail = $id;
+            $panier->save();
+        } catch (Exception $e) {
+            // return 404 not found
+            return $rs->withStatus(404);    
+        }
+    } else {
+        // add fav in session only if not already in
+        if (!isset($_SESSION['favorites'])) {
+            $_SESSION['favorites'] = [];
+        }
+        if (!in_array($id, $_SESSION['favorites'])) {
+            $_SESSION['favorites'][] = $id;
+        }
+    }
+
+    // send number of favs
+    $nbFavs = 0;
+    if (Authentication::isConnected()) {
+        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+    } else {
+        if (isset($_SESSION['favorites'])) {
+            $nbFavs = count($_SESSION['favorites']);
+        }
+    }
+    return $rs->withJson($nbFavs);
+});
+$app->delete('/favorite/{id}',function($rq, $rs, $args){
+    $id = $args['id'];
+    if(Authentication::isConnected()){
+        Panier::where('id_user', '=', Authentication::getProfile()->id)->where('id_cocktail', '=', $id)->delete();
+    }else{
+        if(isset($_SESSION['favorites'])){
+            $key = array_search($id, $_SESSION['favorites']);
+            if($key !== false){
+                unset($_SESSION['favorites'][$key]);
+            }
+        }
+    }
+    // return number of favs
+    $nbFavs = 0;
+    if(Authentication::isConnected()){
+        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+    }else{
+        if(isset($_SESSION['favorites'])){
+            $nbFavs = count($_SESSION['favorites']);
+        }
+    }
+    return $rs->withJson($nbFavs);
+});
+$app->delete('/favorite',function($rq, $rs, $args){
+    if(Authentication::isConnected()){
+        Panier::where('id_user', '=', Authentication::getProfile()->id)->delete();
+    }else{
+        if(isset($_SESSION['favorites'])){
+            unset($_SESSION['favorites']);
+        }
+    }
+    // return number of favs
+    $nbFavs = 0;
+    if(Authentication::isConnected()){
+        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+    }else{
+        if(isset($_SESSION['favorites'])){
+            $nbFavs = count($_SESSION['favorites']);
+        }
+    }
+    return $rs->withJson($nbFavs);
+});
+$app->get('/favorite',function($rq, $rs, $args){
+    $content = "";
+    if(Authentication::isConnected()){
+        $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
+        $content .= "<h1>Vos favoris</h1>";
+        $content .= "<ul>";
+        foreach ($panier as $cocktail) {
+            $content .= "<li>" . "<a href='/cocktail/{$cocktail->cocktail_id}'>{$cocktail->cocktail->name}</a> ". "</li>";
+        }
+        $content .= "</ul>";
+    }else{
+        $content .= "<h1>Vos favoris</h1>";
+        $content .= "<ul>";
+        if(isset($_SESSION['favorites'])){
+            foreach ($_SESSION['favorites'] as $id) {
+                $cocktail = Cocktail::where('id', '=', $id)->first();
+                $content .= "<li>" . "<a href='/cocktail/$cocktail->id'>$cocktail->name</a> ". "</li>";
+            }
+        }
+        $content .= "</ul>";
+    }
+    $view = new View($content, "Vos favoris", $rq);
+    return $view->getHtml();
+});
+$app->get('/favorite/count',function($rq,$rs,$args){
+    // return number of favs
+    $nbFavs = 0;
+    if(Authentication::isConnected()){
+        $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
+    }else{
+        if(isset($_SESSION['favorites'])){
+            $nbFavs = count($_SESSION['favorites']);
+        }
+    }
+    return $rs->withJson($nbFavs);
+});
 $app->run();
