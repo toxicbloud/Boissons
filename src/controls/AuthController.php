@@ -6,6 +6,7 @@ use boissons\models\User;
 use boissons\exceptions\WrongPasswordException;
 use boissons\views\LoginView;
 use boissons\views\RegisterView;
+use boissons\views\ProfileView;
 
 class AuthController
 {
@@ -33,6 +34,15 @@ class AuthController
         }
         return $rs->withjson(['success' => true]);
     }
+    static function edit($rq, $rs, $args)
+    {
+        try{
+            Authentication::editUser($rq);
+        }catch(\Exception $e){
+            return $rs->withjson(['success' => false]);
+        }
+        return $rs->withjson(['success' => true]);
+    }
     static function logout($rq, $rs, $args)
     {
         session_destroy();
@@ -44,6 +54,11 @@ class AuthController
     }
     static function showRegisterForm($rq, $rs, $args){
         $view = new RegisterView($rq);
+        return $view->render();
+    }
+    static function showEditForm($rq, $rs, $args){
+        $user = Authentication::getProfile();
+        $view = new ProfileView($rq, $user);
         return $view->render();
     }
 }

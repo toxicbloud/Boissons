@@ -108,7 +108,7 @@ END;
         if (Authentication::isConnected()) {
             $nom = $_SESSION['user']->username;
             $temp .= <<<END
-                        <span class="navbar-brand">$nom</span>
+                        <a class="navbar-brand"href="$path/edit" >$nom</span>
                         <a class="nav-link" href="$path/logout">Deconnexion</a>
 END;
         } else {

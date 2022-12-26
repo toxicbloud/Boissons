@@ -18,17 +18,6 @@ class Authentication
     static function createUser(Request $rq)
     {
         $body = $rq->getParsedBody();
-    //     username VARCHAR(30) NOT NULL unique,
-    // password VARCHAR(255) NOT NULL,
-    // firstname VARCHAR(30) NULL,
-    // lastname VARCHAR(30) NULL,
-    // sex VARCHAR(1) NULL,
-    // email VARCHAR(300) NULL,
-    // dateofbirth DATE NULL,
-    // address VARCHAR(300) NULL,
-    // ZIPcode VARCHAR(5) NULL,
-    // city VARCHAR(100) NULL,
-    // phone VARCHAR(20) NULL
         $hash = password_hash($body['password'], PASSWORD_DEFAULT);
         $u = new User();
         $u->username = $body['pseudo'];
@@ -48,6 +37,29 @@ class Authentication
             throw new \Exception('Le nom d\'utilisateur est déjà utilisé.');
         }
         Authentication::loadProfile($u); // on charge le profil de l'utilisateur
+    }
+    static function editUser(Request $rq){
+        $user = Authentication::getProfile();
+        $body = $rq->getParsedBody();
+        if(isset($body['password']) && $body['password'] != ''){
+            $hash = password_hash($body['password'], PASSWORD_DEFAULT);
+            $user->password = $hash;
+        }
+        $user->username = $body['pseudo'];
+        $user->firstname = $body['firstname'];
+        $user->lastname = $body['lastname'];
+        $user->sex = $body['gender'];
+        $user->email = $body['email'];
+        $user->dateofbirth = $body['dateofbirth'];
+        $user->address = $body['address'];
+        $user->ZIPcode = $body['zipcode'];
+        $user->city = $body['city'];
+        $user->phone = $body['phone'];
+        try {
+            $user->save();
+        } catch (QueryException $th) {
+            throw new \Exception('Le nom d\'utilisateur est déjà utilisé.');
+        }
     }
 
     /**

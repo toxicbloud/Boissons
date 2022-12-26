@@ -86,17 +86,6 @@ HTML;
         $content .= "<li> <a href='/cocktail/$cocktail->id'>$cocktail->name</a> </li>";
     }
     $content .= "</ul>";
-    // DB::connection()->enableQueryLog();
-    // $cocktails = Aliment::getCocktails($aliments);
-    // foreach ($cocktails as $cocktail) {
-    //     $content .= "<li>" . $cocktail->name . "</li>";
-    // }
-    // $i=0;
-    // foreach( DB::getQueryLog() as $q){
-    //     $i++;
-    // };
-    // echo $i;
-    
     $view = new View($content, $aliments->name, $rq);
     return $view->getHtml();
 });
@@ -104,6 +93,10 @@ $app->get('/login', function ($rq, $rs, $args) {
     return AuthController::showLoginForm($rq, $rs, $args);
 });
 $app->get('/logout', AuthController::class . ':logout');
+$app->get('/edit', function ($rq, $rs, $args) {
+    return AuthController::showEditForm($rq, $rs, $args);
+});
+$app->post('/edit', AuthController::class . ':edit');
 $app->get('/register', function ($rq, $rs, $args) {
     return AuthController::showRegisterForm($rq, $rs, $args);
 });
