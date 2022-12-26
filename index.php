@@ -5,6 +5,7 @@ require_once('conf/db.php');
 include('Donnees.inc.php');
 session_start();
 
+use boissons\controls\AlimentController;
 use boissons\controls\CocktailController;
 use boissons\controls\AuthController;
 use boissons\controls\Authentication;
@@ -45,50 +46,7 @@ $app->get('/cocktail/{id}', CocktailController::class . ':getCocktail');
 $app->get('/cocktails', CocktailController::class . ':getCocktails');
 $app->get('/aliments', CocktailController::class . ':getAliments');
 $app->post('/cocktails', CocktailController::class . ':getSearch');
-$app->get('/aliment/{id}',function ($rq, $rs, $args) {
-    $id = $args['id'];
-    $aliments = Aliment::where('id', '=',$id)->with('superCategories','sousCategories','cocktails')->first();
-    $content = "<h1>$aliments->name</h1>";
-    $elements = Aliment::where('id', '=',$id)->first()->getTopPath();
-    $test = Aliment::where('id', '=',$id)->first()->pathToRoot();
-    $content .= "<h3>";
-    $content .= <<<HTML
-    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"><ol class="breadcrumb">
-HTML;
-    for ($i=0; $i < $test->count()-1 ; $i++) {
-        $id = $test[$i]->id;
-        $name = $test[$i]->name;
-        $content .= "<li class='breadcrumb-item'><a href='/aliment/$id'>$name</a> </li>";
-    }
-    $id = $test[$test->count()-1]->id;
-    $name = $test[$test->count()-1]->name;
-    $content .= "<li class='breadcrumb-item aria-current='page' active'><a>$name</a> </li> ";
-    $content .= "</ol></nav> </h3>";
-    $content .= "Super categories:<br>";
-    $content .= "<ul>";
-    foreach ($aliments->superCategories as $categorie) {
-        $content .= "<li>" . "<a href='/aliment/$categorie->id'>$categorie->name</a> ". "</li>";
-    }
-    $content .= "</ul>";
-    $content .= "<br>";
-    if($aliments->sousCategories->count() > 0){
-        $content .= "Sous categories:<br>";
-        $content .= "<ul>";
-        foreach ($aliments->sousCategories as $categorie) {
-            $content .= "<li>" . "<a href='/aliment/$categorie->id'>$categorie->name</a> ". "</li>";
-        }
-        $content .= "</ul>";
-        $content .= "<br>";
-    }
-    $content .= "Cocktails utilisant cet aliment :<br>";
-    $content .= "<ul>";
-    foreach ($aliments->cocktails as $cocktail) {
-        $content .= "<li> <a href='/cocktail/$cocktail->id'>$cocktail->name</a> </li>";
-    }
-    $content .= "</ul>";
-    $view = new View($content, $aliments->name, $rq);
-    return $view->getHtml();
-});
+$app->get('/aliment/{id}',AlimentController::class . ':getAliment');
 $app->get('/login', function ($rq, $rs, $args) {
     return AuthController::showLoginForm($rq, $rs, $args);
 });
