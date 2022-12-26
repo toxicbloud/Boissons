@@ -24,7 +24,7 @@ $sql = "DROP TABLE IF EXISTS user";
 echo $pdo->query($sql) ? '<li>RESET table user</li>' : 'USER KO';
 $sql = "CREATE TABLE IF NOT EXISTS user (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(30) NOT NULL,
+    username VARCHAR(30) NOT NULL unique,
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(30) NULL,
     lastname VARCHAR(30) NULL,

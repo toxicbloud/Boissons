@@ -5,6 +5,7 @@ namespace boissons\controls;
 use boissons\models\User;
 use boissons\exceptions\WrongPasswordException;
 use Slim\Http\Request;
+use Illuminate\Database\QueryException;
 
 class Authentication
 {
@@ -17,12 +18,35 @@ class Authentication
     static function createUser(Request $rq)
     {
         $body = $rq->getParsedBody();
-
+    //     username VARCHAR(30) NOT NULL unique,
+    // password VARCHAR(255) NOT NULL,
+    // firstname VARCHAR(30) NULL,
+    // lastname VARCHAR(30) NULL,
+    // sex VARCHAR(1) NULL,
+    // email VARCHAR(300) NULL,
+    // dateofbirth DATE NULL,
+    // address VARCHAR(300) NULL,
+    // ZIPcode VARCHAR(5) NULL,
+    // city VARCHAR(100) NULL,
+    // phone VARCHAR(20) NULL
         $hash = password_hash($body['password'], PASSWORD_DEFAULT);
         $u = new User();
         $u->username = $body['pseudo'];
+        $u->firstname = $body['firstname'];
+        $u->lastname = $body['lastname'];
+        $u->sex = $body['gender'];
+        $u->email = $body['email'];
+        $u->dateofbirth = $body['dateofbirth'];
+        $u->address = $body['address'];
+        $u->ZIPcode = $body['zipcode'];
+        $u->city = $body['city'];
+        $u->phone = $body['phone'];
         $u->password = $hash;
-        $u->save();
+        try {
+            $u->save();
+        } catch (QueryException $th) {
+            throw new \Exception('Le nom d\'utilisateur est déjà utilisé.');
+        }
         Authentication::loadProfile($u); // on charge le profil de l'utilisateur
     }
 

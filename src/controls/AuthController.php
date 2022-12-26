@@ -23,8 +23,12 @@ class AuthController
     }
     static function register($rq, $rs, $args)
     {
-        Authentication::createUser($rq);
-        return $rs->withRedirect('/');
+        try{
+            Authentication::createUser($rq);
+        }catch(\Exception $e){
+            return $rs->withjson(['success' => false, 'message' => $e->getMessage()]);
+        }
+        return $rs->withjson(['success' => true]);
     }
     static function logout($rq, $rs, $args)
     {
