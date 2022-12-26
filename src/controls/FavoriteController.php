@@ -35,17 +35,7 @@ class FavoriteController
                 $_SESSION['favorites'][] = (int) $id;
             }
         }
-
-        // send number of favs
-        $nbFavs = 0;
-        if (Authentication::isConnected()) {
-            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-        } else {
-            if (isset($_SESSION['favorites'])) {
-                $nbFavs = count($_SESSION['favorites']);
-            }
-        }
-        return $rs->withJson($nbFavs);
+        return $this->getFavoritesCount($rq, $rs, $args);
     }
     function getFavorites($rq, $rs, $args)
     {
@@ -104,16 +94,7 @@ class FavoriteController
                 }
             }
         }
-        // return number of favs
-        $nbFavs = 0;
-        if (Authentication::isConnected()) {
-            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-        } else {
-            if (isset($_SESSION['favorites'])) {
-                $nbFavs = count($_SESSION['favorites']);
-            }
-        }
-        return $rs->withJson($nbFavs);
+        return $this->getFavoritesCount($rq, $rs, $args);
     }
     function deleteAllFavorites($rq, $rs, $args)
     {
@@ -124,15 +105,6 @@ class FavoriteController
                 unset($_SESSION['favorites']);
             }
         }
-        // return number of favs
-        $nbFavs = 0;
-        if (Authentication::isConnected()) {
-            $nbFavs = Panier::where('id_user', '=', Authentication::getProfile()->id)->count();
-        } else {
-            if (isset($_SESSION['favorites'])) {
-                $nbFavs = count($_SESSION['favorites']);
-            }
-        }
-        return $rs->withJson($nbFavs);
+        return $this->getFavoritesCount($rq, $rs, $args);
     }
 }

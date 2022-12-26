@@ -5,6 +5,7 @@ window.addEventListener("load", async () => {
         if (response.ok) {
             response.json().then(data => {
                 const favs = data;
+                console.log(favs);
                 favbuttons.forEach(favbutton => {
                     const cocktailId = favbutton.getAttribute("data-idCocktail");
                     if (favs.includes(parseInt(cocktailId))) {
@@ -28,6 +29,7 @@ window.addEventListener("load", async () => {
                     if (response.ok) {
                         console.log(`boisson n° ${cocktailId} supprimée des favoris`);
                         emptyHeart(e.target);
+                        updateFavCountWithResponse(response);
                     } else {
                         console.error(`impossible de supprimer la boisson n° ${cocktailId} des favoris`);
                     }
@@ -39,12 +41,12 @@ window.addEventListener("load", async () => {
                     if (response.ok) {
                         console.log(`boisson n° ${cocktailId} ajoutée aux favoris`);
                         fillHeart(e.target);
+                        updateFavCountWithResponse(response);
                     } else {
                         console.error(`impossible d'ajouter la boisson n° ${cocktailId} aux favoris`);
                     }
                 });
             }
-            updateFavCount();
         });
     });
 });
@@ -77,6 +79,7 @@ const emptyHeart = (element) => {
 }
 /**
  * fonction qui met à jour le nombre de favoris dans la navbar
+ * en refaisant une requête
  */
 const updateFavCount = () => {
     const FavCountSpan = document.getElementById("favcount");
@@ -89,4 +92,17 @@ const updateFavCount = () => {
             });
         }
     });
+}
+/**
+ * fonction qui met à jour le nombre de favoris dans la navbar
+ * sans avoir à refaire une requête
+ * @param {Response} response 
+ */
+const updateFavCountWithResponse = (response) => {
+    if (response.ok) {
+        response.json().then(data => {
+            const FavCountSpan = document.getElementById("favcount");
+            FavCountSpan.textContent = data;
+        });
+    }
 }

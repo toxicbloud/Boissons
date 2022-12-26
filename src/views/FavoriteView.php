@@ -24,10 +24,12 @@ class FavoriteView
         <div id="listCocktails" style="margin-top:10px;" class="d-flex flex-column align-items-center">
         END;
         foreach ($this->cocktails as $cocktail) {
+            $img = CocktailsView::getImageFileName($cocktail->name);
             $temp .= <<<END
             <div class="card mt-2" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">$cocktail->name</h5>
+                <img src="$path/Photos/$img" class="card-img-top mb-1" alt="...">
                 <a href="$path/cocktail/$cocktail->id" class="btn btn-secondary">Voir le cocktail</a>
             </div>
             </div>

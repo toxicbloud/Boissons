@@ -16,7 +16,7 @@ class CocktailsView
         $vue->addJSScript('cocktails.js');
         return $vue->getHtml();
     }
-    private function getImageFileName($name){
+    public static function getImageFileName($name){
         $normalizeChars = array(
             'Š'=>'S', 'š'=>'s', 'Ð'=>'Dj','Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A',
             'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E', 'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I',
@@ -37,7 +37,7 @@ class CocktailsView
         }
     }
     private function getItemHtml(\boissons\models\Cocktail $cocktail){
-        $imageFileName = $this->rq->getUri()->getBasePath()."/Photos/".$this->getImageFileName($cocktail->name);
+        $imageFileName = $this->rq->getUri()->getBasePath()."/Photos/". CocktailsView::getImageFileName($cocktail->name);
         $html = <<<END
         <li class="list-group-item">
             <!-- Custom content-->
