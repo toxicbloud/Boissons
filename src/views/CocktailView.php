@@ -16,7 +16,6 @@ class CocktailView{
     {
         $path = $this->rq->getUri()->getBasePath();
         $img = CocktailsView::getImageFileName($this->cocktail->name);
-        // genere une page html avec le nom du cocktail les ingredients la recette et l'image en utilisant bootstrap 5
         $temp = <<<END
         <div class="container mt-5">
     <div class="row">
@@ -26,7 +25,7 @@ class CocktailView{
             {$this->getPreparationHTML()}
         </div>
       <div class="col-md-6">
-        <img src="/Photos/{$img}" alt="description de l'image" class="img-fluid img-thumbnail">
+        <img src="$path/Photos/{$img}" alt="description de l'image" class="img-fluid img-thumbnail">
       </div>
     </div>
     <h2 class="mt-5">Ingrédients</h2>
