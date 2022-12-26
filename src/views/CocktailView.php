@@ -14,19 +14,48 @@ class CocktailView{
     }
     public function html()
     {
-        $nom = $this->cocktail->name;
         $path = $this->rq->getUri()->getBasePath();
+        $img = CocktailsView::getImageFileName($this->cocktail->name);
+        // genere une page html avec le nom du cocktail les ingredients la recette et l'image en utilisant bootstrap 5
         $temp = <<<END
-        $nom
-        END;
-        foreach($this->cocktail->composition as $ingredient){
+        <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>{$this->cocktail->name}</h3>
+        <h6>Préparation : </h6>
+            {$this->getPreparationHTML()}
+        </div>
+      <div class="col-md-6">
+        <img src="/Photos/{$img}" alt="description de l'image" class="img-fluid img-thumbnail">
+      </div>
+    </div>
+    <h2 class="mt-5">Ingrédients</h2>
+    <ul class="list-group mb-2">
+        {$this->getIngredientsHTML()}
+    </ul>
+  </div>
+END;
+
+        return $temp;
+    }
+    private function getIngredientsHTML(){
+        $temp = "";
+        // split ingredients by | 
+        $ingredients = explode("|",$this->cocktail->ingredients);
+        foreach($ingredients as $ingredient){
             $temp .= <<<END
-            <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">$ingredient->name</h5>
-                <a href="$path/aliment/$ingredient->id" class="btn btn-secondary">Voir l'ingrédient</a>
-            </div>
-            </div>
+            <a class='list-group-item' >$ingredient</a>
+            END;
+        }
+        return $temp;
+    }
+    private function getPreparationHTML(){
+        $temp = "";
+        // split by .
+        $preparation = explode(".",$this->cocktail->preparation);
+        foreach($preparation as $step){
+            $temp .= <<<END
+            $step <br>
             END;
         }
         return $temp;
