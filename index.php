@@ -43,26 +43,7 @@ $app->get(
 $app->get('/cocktail/{id}', CocktailController::class . ':getCocktail');
 $app->get('/cocktails', CocktailController::class . ':getCocktails');
 $app->get('/aliments', CocktailController::class . ':getAliments');
-$app->post('/cocktails', function ($rq, $rs, $args) {
-    // get array of ingredients
-    $ingredients = $rq->getParsedBodyParam('ingredients');
-    // get array of cocktails
-    $ingredients = Aliment::whereIn('id', $ingredients)->with('sousCategories','cocktails')->get();
-    $cocktails = $ingredients->flatMap(function ($aliment) {
-        return Aliment::getCocktails($aliment);
-    })->unique();
-    // select only name and id into unique collection
-    $cocktails = $cocktails->map(function ($cocktail) {
-        return ['id' => $cocktail->id, 'name' => $cocktail->name];
-    });
-    // make collection unique
-    $cocktails = $cocktails->unique();
-    return $rs->withJson(array_values($cocktails->toArray()));
-    // return $rs->withJson($cocktails);
-    // $cocktails = Cocktail::whereHas('composition', function ($query) use ($ingredients) {
-    //     $query->whereIn('id', $ingredients);
-    // })->get();
-});
+$app->post('/cocktails', CocktailController::class . ':getSearch');
 $app->get('/aliment/{id}',function ($rq, $rs, $args) {
     $id = $args['id'];
     $aliments = Aliment::where('id', '=',$id)->with('superCategories','sousCategories','cocktails')->first();
@@ -239,5 +220,19 @@ $app->get('/favorite/count',function($rq,$rs,$args){
         }
     }
     return $rs->withJson($nbFavs);
+});
+$app->get('/favorite/list',function($rq,$rs,$args){
+    $list = [];
+    if(Authentication::isConnected()){
+        $panier = Panier::where('id_user', '=', Authentication::getProfile()->id)->with('cocktail')->get();
+        foreach ($panier as $cocktail) {
+            $list[] = $cocktail->id_cocktail;
+        }
+    }else{
+        if(isset($_SESSION['favorites'])){
+            $list = $_SESSION['favorites'];
+        }
+    }
+    return $rs->withJson($list);
 });
 $app->run();

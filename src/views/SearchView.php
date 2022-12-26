@@ -22,6 +22,8 @@ class SearchView
         $path = $this->rq->getUri()->getBasePath();
         $temp = <<<END
         <div class="text-center" style="padding-top:10px;">
+        <h1>Recherche de cocktails</h1>
+        <p>Entrez vos ingrédients préférés et nous vous proposerons des cocktails qui vous correspondent.</p>
         <form id="form" autocomplete="off" action="" style="margin-bottom: 10px;">
             <div class="autocomplete" style="width:300px;">
                 <input id="Myingredients" type="text" name="Myingredients" placeholder="Ingrédients">

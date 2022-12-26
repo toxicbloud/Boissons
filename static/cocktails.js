@@ -1,40 +1,92 @@
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+    console.log("cocktails.js loaded");
     const favbuttons = document.querySelectorAll('[data-idCocktail]');
-    favbuttons.forEach(favbutton => {
-        favbutton.addEventListener("click", function (e) {
-            const cocktailId = e.target.getAttribute("data-idCocktail");
-            fetch(`/favorite/${cocktailId}`, {
-                method: 'POST'
-            }).then(response => {
-                if (response.ok) {
-                    console.log(`boisson n° ${cocktailId} ajoutée aux favoris`);
-                    // make the heart filled and red
-                    e.target.classList.remove("bi-heart");
-                    e.target.classList.add("bi-heart-fill");
-                    e.target.style.color = "red";
-                } else {
-                    console.log("not ok");
-                    // make a toast to say that the user is not logged in
-                    const toast = document.createElement("div");
-                    toast.classList.add("toast");
-                    toast.setAttribute("role", "alert");
-                    toast.setAttribute("aria-live", "assertive");
-                    toast.setAttribute("aria-atomic", "true");
-                    toast.setAttribute("data-delay", "3000");
-                    toast.innerHTML = `
-                        <div class="toast-header">
-                            <strong class="me-auto">Erreur</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body
-                            Une erreur est survenue.
-                        </div>
-                    `;
-                    document.body.appendChild(toast);
-                    const toastEl = new bootstrap.Toast(toast);
-                    toastEl.show();
-                }
+    fetch("/favorite/list").then(response => {
+        if (response.ok) {
+            response.json().then(data => {
+                const favs = data;
+                favbuttons.forEach(favbutton => {
+                    const cocktailId = favbutton.getAttribute("data-idCocktail");
+                    if (favs.includes(parseInt(cocktailId))) {
+                        favbutton.classList.remove("bi-heart");
+                        favbutton.classList.add("bi-heart-fill");
+                        favbutton.style.color = "red";
+                    }
+                });
             });
+        } else {
+            console.error("impossible de récupérer la liste des favoris");
+        }
+    });
+    favbuttons.forEach(favbutton => {
+        favbutton.addEventListener("click", async (e) => {
+            const cocktailId = e.target.getAttribute("data-idCocktail");
+            if (isFilled(e.target)) {
+                fetch(`/favorite/${cocktailId}`, {
+                    method: 'DELETE'
+                }).then(async response => {
+                    if (response.ok) {
+                        console.log(`boisson n° ${cocktailId} supprimée des favoris`);
+                        emptyHeart(e.target);
+                    } else {
+                        console.error(`impossible de supprimer la boisson n° ${cocktailId} des favoris`);
+                    }
+                });
+            } else {
+                fetch(`/favorite/${cocktailId}`, {
+                    method: 'POST'
+                }).then(async response => {
+                    if (response.ok) {
+                        console.log(`boisson n° ${cocktailId} ajoutée aux favoris`);
+                        fillHeart(e.target);
+                    } else {
+                        console.error(`impossible d'ajouter la boisson n° ${cocktailId} aux favoris`);
+                    }
+                });
+            }
+            updateFavCount();
         });
     });
 });
+
+/**
+ *  fonction qui permet de savoir si l'element coeur est rempli ou non
+ * @param {Element} element 
+ * @returns booleen qui indique si l'element est rempli ou non
+ */
+const isFilled = (element) => {
+    return element.classList.contains("bi-heart-fill");
+}
+/**
+ * 
+ * @param {Element} element 
+ */
+const fillHeart = (element) => {
+    element.classList.remove("bi-heart");
+    element.classList.add("bi-heart-fill");
+    element.style.color = "red";
+}
+/**
+ * 
+ * @param {Element} element 
+ */
+const emptyHeart = (element) => {
+    element.classList.remove("bi-heart-fill");
+    element.classList.add("bi-heart");
+    element.style.color = "black";
+}
+/**
+ * fonction qui met à jour le nombre de favoris dans la navbar
+ */
+const updateFavCount = () => {
+    const FavCountSpan = document.getElementById("favcount");
+    fetch("/favorite/count", {
+        method: "GET"
+    }).then(response => {
+        if (response.ok) {
+            response.json().then(data => {
+                FavCountSpan.textContent = data;
+            });
+        }
+    });
+}
