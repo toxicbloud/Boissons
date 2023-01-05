@@ -128,7 +128,7 @@ window.onload = async function () {
     searchButton.addEventListener("click", function (e) {
         e.preventDefault();
         const loading = document.getElementById("loading");
-        loading.style.display = "block";
+        loading.style.display = "";
         // post all the ingredients to the server
         fetch('/cocktails', {
             method: 'POST',

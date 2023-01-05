@@ -32,7 +32,7 @@ class SearchView
         </form>
         <div id="listIngredients">
         </div>
-        <div id="loading" class="spinner-border" role="status" style="display:none;">
+        <div id="loading" class="spinner-border mt-3" role="status" style="display:none;">
             <span class="sr-only">Loading...</span>
         </div>
         <h2 id="result" style="display:none;">Résultats</h2>

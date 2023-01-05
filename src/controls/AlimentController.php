@@ -15,7 +15,9 @@ class AlimentController
         $aliments = Aliment::where('id', '=', $id)->with('superCategories', 'sousCategories', 'cocktails')->first();
         $elem = Aliment::where('id', '=', $id)->first()->pathToRoot();
         $content = <<<HTML
-        <h1>$aliments->name</h1>
+        <div class='container pt-5'>
+
+        <!-- <h1>$aliments->name</h1> -->
         <h3>
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb"><ol class="breadcrumb">
 HTML;
@@ -26,7 +28,6 @@ HTML;
         }
         $content .= <<<HTML
         <li class='breadcrumb-item aria-current='page' active'><a>{$elem[$elem->count() - 1]->name}</a> </li> </ol></nav> </h3>
-        <div class='container'>
         <h5>Super categories:</h5>
         <div class='col-12 col-md-2'> <div class='list-group'>
 HTML;

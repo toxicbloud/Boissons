@@ -1,5 +1,9 @@
 <?php
 // error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_DEPRECATED));
+
+// set session timeout to 2 hours
+ini_set('session.gc_maxlifetime', 7200);
+
 require_once('vendor/autoload.php');
 require_once('conf/db.php');
 include('Donnees.inc.php');
